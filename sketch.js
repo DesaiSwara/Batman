@@ -20,8 +20,13 @@ function setup(){
     umbrella=new Umbrella(200,610,75,75);
 
     for(var i=0; i<maxdrops; i++) {
-         drops.push(new Drops(random(0,400), random(0,400)));
+         drops.push(new Drops(70,random(0,400), random(0,400),PI/2));
     }
+
+    if(frameCount%15===0){
+        drops.push(new Drops(70,random(0,400), random(0,400),PI/2)); 
+    }
+
 	Engine.run(engine);  
 }
 
