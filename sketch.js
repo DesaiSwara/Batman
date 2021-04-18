@@ -1,41 +1,76 @@
 const Engine = Matter.Engine;
-const World= Matter.World;
+const World = Matter.World;
 const Bodies = Matter.Bodies;
-const Constraint = Matter.Constraint;
-const Events = Matter.Events
+var thunder, thunder1,thunder2,thunder3,thunder4;
 
-var maxdrops=100,umbrella;
-var drops=[];
+var engine, world;
+var drops = [];
+var rand;
+
+var maxDrops=100;
+
+var thunderCreatedFrame=0;
 
 function preload(){
-    
+    thunder1 = loadImage("1.png");
+    thunder2 = loadImage("2.png");
+    thunder3 = loadImage("3.png");
+    thunder4 = loadImage("4.png");
 }
 
 function setup(){
-    createCanvas(400,700);
-
     engine = Engine.create();
-	world = engine.world;
-	
-    umbrella=new Umbrella(200,610,75,75);
+    world = engine.world;
 
-    for(var i=0; i<maxdrops; i++) {
-         drops.push(new Drops(70,random(0,400), random(0,400),PI/2));
+    createCanvas(400,700);
+    umbrella = new Umbrella(200,500);
+
+    //creating drops
+    if(frameCount % 150 === 0){
+
+        for(var i=0; i<maxDrops; i++){
+            drops.push(new createDrop(random(0,400), random(0,400)));
+        }
+
     }
-
-    if(frameCount%15===0){
-        drops.push(new Drops(70,random(0,400), random(0,400),PI/2)); 
-    }
-
-	Engine.run(engine);  
+    
 }
 
 function draw(){
-    background(0)
+    Engine.update(engine);
+    background(0); 
+
+    //creating thunder
+    rand = Math.round(random(1,4));
+    if(frameCount%80===0){
+        thunderCreatedFrame=frameCount;
+        thunder = createSprite(random(10,370), random(10,30), 10, 10);
+        switch(rand){
+            case 1: thunder.addImage(thunder1);
+            break;
+            case 2: thunder.addImage(thunder2);
+            break; 
+            case 3: thunder.addImage(thunder3);
+            break;
+            case 4: thunder.addImage(thunder4);
+            break;
+            default: break;
+        }
+        thunder.scale = random(0.3,0.6)
+    }
+
+    if(thunderCreatedFrame + 10 ===frameCount && thunder){
+        thunder.destroy();
+    }
+
     umbrella.display();
 
-    for (var i = 0; i < drops.length; i++) {
-          drops[i].display;
+    //displaying rain drops
+    for(var i = 0; i<maxDrops; i++){
+        drops[i].showDrop();
+        drops[i].updateY()
+        
     }
-}   
 
+    drawSprites();
+}   
